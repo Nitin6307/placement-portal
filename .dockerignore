@@ -1,0 +1,8 @@
+.idea
+.git
+uploads
+src
+*.log
+README.md
+Dockerfile
+docker-compose.yml

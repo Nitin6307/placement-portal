@@ -1,0 +1,26 @@
+# IntelliJ
+.idea/
+*.iml
+
+# Java / Maven
+target/
+*.class
+
+# Node
+node_modules/
+dist/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Application logs
+*.log
+
+# Uploaded files
+uploads/
+
+# OS files
+.DS_Store
+Thumbs.db
