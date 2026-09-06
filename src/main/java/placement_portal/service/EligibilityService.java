@@ -6,7 +6,7 @@ import placement_portal.entity.Student;
 import placement_portal.repository.CompanyRepository;
 import placement_portal.repository.StudentRepository;
 import org.springframework.stereotype.Service;
-
+import placement_portal.repository.JobRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,12 +16,16 @@ public class EligibilityService {
 
     private final StudentRepository studentRepository;
     private final CompanyRepository companyRepository;
+    private final JobRepository jobRepository;
 
     public EligibilityService(
             StudentRepository studentRepository,
-            CompanyRepository companyRepository) {
+            CompanyRepository companyRepository,
+            JobRepository jobRepository) {
+
         this.studentRepository = studentRepository;
         this.companyRepository = companyRepository;
+        this.jobRepository = jobRepository;
     }
 
     public boolean checkEligibility(Long studentId, Long companyId) {
@@ -136,5 +140,41 @@ public class EligibilityService {
                                 .anyMatch(studentSkill ->
                                         studentSkill.equalsIgnoreCase(
                                                 requiredSkill)));
+    }
+    public boolean checkJobEligibility(Long studentId, Long jobId) {
+
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() ->
+                        new RuntimeException("Student not found"));
+
+        var job = jobRepository.findById(jobId)
+                .orElseThrow(() ->
+                        new RuntimeException("Job not found"));
+
+        // CGPA
+        if (student.getCgpa() < job.getMinCgpa()) {
+            return false;
+        }
+
+        // Backlogs
+        if (student.getBacklogs() > job.getMaxBacklogs()) {
+            return false;
+        }
+
+        // Branch
+        if (!isBranchAllowed(
+                student.getBranch(),
+                job.getAllowedBranches())) {
+            return false;
+        }
+
+        // Skills
+        if (!hasRequiredSkills(
+                student,
+                job.getRequiredSkills())) {
+            return false;
+        }
+
+        return true;
     }
 }

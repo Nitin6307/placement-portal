@@ -9,6 +9,7 @@ import placement_portal.repository.StudentRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import placement_portal.service.EligibilityService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,15 +21,18 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final StudentRepository studentRepository;
     private final JobRepository jobRepository;
+    private final EligibilityService eligibilityService;
 
     public ApplicationService(
             ApplicationRepository applicationRepository,
             StudentRepository studentRepository,
-            JobRepository jobRepository) {
+            JobRepository jobRepository,
+            EligibilityService eligibilityService) {
 
         this.applicationRepository = applicationRepository;
         this.studentRepository = studentRepository;
         this.jobRepository = jobRepository;
+        this.eligibilityService = eligibilityService;
     }
 
     // STUDENT: create own application
@@ -51,6 +55,12 @@ public class ApplicationService {
 
             throw new RuntimeException(
                     "Student has already applied for this job");
+        }
+        if (!eligibilityService.checkJobEligibility(
+                student.getId(),
+                jobId)) {
+            throw new RuntimeException(
+                    "You are not eligible for this job");
         }
 
         Application application = Application.builder()
