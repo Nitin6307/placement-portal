@@ -103,7 +103,9 @@ public class StudentService {
 
         Student student = getMyProfile(authentication);
 
-        student.getSkills().remove(skill);
+        student.getSkills().removeIf(
+                existingSkill -> existingSkill.getId().equals(skillId)
+        );
 
         return studentRepository.save(student);
     }
