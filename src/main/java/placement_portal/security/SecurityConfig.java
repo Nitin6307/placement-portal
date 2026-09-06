@@ -145,8 +145,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/recommendations/**")
                         .hasRole("STUDENT")
 
-                        .requestMatchers("/api/skills/**")
-                        .hasRole("OFFICER")
+                        .requestMatchers(HttpMethod.GET, "/api/skills").authenticated()
+                        .requestMatchers("/api/skills/**").hasRole("OFFICER")
 
                         .requestMatchers("/api/users/**")
                         .hasRole("OFFICER")

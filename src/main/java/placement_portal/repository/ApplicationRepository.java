@@ -16,4 +16,5 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     );
 
     boolean existsByStudentIdAndJobId(Long studentId, Long jobId);
+    void deleteByJobId(Long jobId);
 }

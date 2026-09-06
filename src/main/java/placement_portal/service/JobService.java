@@ -5,6 +5,7 @@ import placement_portal.entity.Job;
 import placement_portal.repository.CompanyRepository;
 import placement_portal.repository.JobRepository;
 import org.springframework.stereotype.Service;
+import placement_portal.repository.ApplicationRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,11 +15,15 @@ public class JobService {
 
     private final JobRepository jobRepository;
     private final CompanyRepository companyRepository;
+    private final ApplicationRepository applicationRepository;
 
     public JobService(JobRepository jobRepository,
-                      CompanyRepository companyRepository) {
+                      CompanyRepository companyRepository,
+                      ApplicationRepository applicationRepository) {
+
         this.jobRepository = jobRepository;
         this.companyRepository = companyRepository;
+        this.applicationRepository = applicationRepository;
     }
 
     public Job createJob(Long companyId, Job job) {
@@ -70,6 +75,7 @@ public class JobService {
             throw new RuntimeException("Job not found");
         }
 
+        applicationRepository.deleteByJobId(id);
         jobRepository.deleteById(id);
     }
 }
