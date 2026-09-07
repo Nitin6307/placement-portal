@@ -1,5 +1,6 @@
 package placement_portal.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import placement_portal.entity.Company;
 import placement_portal.entity.Job;
 import placement_portal.repository.CompanyRepository;
@@ -69,6 +70,7 @@ public class JobService {
         return jobRepository.save(existingJob);
     }
 
+    @Transactional
     public void deleteJob(Long id) {
 
         if (!jobRepository.existsById(id)) {
