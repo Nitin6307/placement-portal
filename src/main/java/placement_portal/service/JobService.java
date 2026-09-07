@@ -33,6 +33,7 @@ public class JobService {
                 .orElseThrow(() -> new RuntimeException("Company not found"));
 
         job.setCompany(company);
+        job.setLocation(company.getLocation());
 
         return jobRepository.save(job);
     }
@@ -66,6 +67,7 @@ public class JobService {
         existingJob.setMinCgpa(job.getMinCgpa());
         existingJob.setMaxBacklogs(job.getMaxBacklogs());
         existingJob.setAllowedBranches(job.getAllowedBranches());
+        existingJob.setLocation(existingJob.getCompany().getLocation());
 
         return jobRepository.save(existingJob);
     }

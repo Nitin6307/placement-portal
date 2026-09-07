@@ -41,6 +41,9 @@ public class Job {
     @NotBlank
     private String allowedBranches;
 
+
+    private String location;
+
     @ManyToOne
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
