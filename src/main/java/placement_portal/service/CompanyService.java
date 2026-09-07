@@ -1,8 +1,11 @@
 package placement_portal.service;
 
 import placement_portal.entity.Company;
+import placement_portal.repository.ApplicationRepository;
 import placement_portal.repository.CompanyRepository;
+import placement_portal.repository.JobRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,9 +14,17 @@ import java.util.Optional;
 public class CompanyService {
 
     private final CompanyRepository companyRepository;
+    private final JobRepository jobRepository;
+    private final ApplicationRepository applicationRepository;
 
-    public CompanyService(CompanyRepository companyRepository) {
+    public CompanyService(
+            CompanyRepository companyRepository,
+            JobRepository jobRepository,
+            ApplicationRepository applicationRepository) {
+
         this.companyRepository = companyRepository;
+        this.jobRepository = jobRepository;
+        this.applicationRepository = applicationRepository;
     }
 
     public Company createCompany(Company company) {
@@ -47,11 +58,23 @@ public class CompanyService {
         return companyRepository.save(existingCompany);
     }
 
+    @Transactional
     public void deleteCompany(Long id) {
 
         if (!companyRepository.existsById(id)) {
             throw new RuntimeException("Company not found");
         }
+
+        List<Long> jobIds = jobRepository.findByCompanyId(id)
+                .stream()
+                .map(job -> job.getId())
+                .toList();
+
+        for (Long jobId : jobIds) {
+            applicationRepository.deleteByJobId(jobId);
+        }
+
+        jobRepository.deleteByCompanyId(id);
 
         companyRepository.deleteById(id);
     }
