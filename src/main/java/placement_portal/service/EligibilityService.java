@@ -168,12 +168,6 @@ public class EligibilityService {
             return false;
         }
 
-        // Skills
-        if (!hasRequiredSkills(
-                student,
-                job.getRequiredSkills())) {
-            return false;
-        }
 
         return true;
     }
